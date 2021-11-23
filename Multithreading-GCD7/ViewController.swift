@@ -35,9 +35,24 @@ final class ViewController: UIViewController {
         }
     }
     
+    // second approach (URLSession)
+    private func secondMethodToDownloadImage() {
+        let task = URLSession.shared.dataTask(with: imageURL) { data, response, error in
+            if let imageData = data {
+                print("1")
+                DispatchQueue.main.async {
+                    self.myImageView.image = UIImage(data: imageData)
+                }
+                print("2")
+            }
+        }
+        task.resume()
+    }
+    
     @IBAction func downloadButtonAction(_ sender: UIButton) {
         myImageView.image = nil
-        firstMethodToDownloadImage()
+//        firstMethodToDownloadImage()
+        secondMethodToDownloadImage()
     }
 }
 
