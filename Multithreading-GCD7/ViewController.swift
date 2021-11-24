@@ -23,7 +23,7 @@ final class ViewController: UIViewController {
 //        myImageView.image = UIImage(systemName: "nosign")
     }
     
-    // first approach
+    // the first approach
     private func firstMethodToDownloadImage() {
         let queue = DispatchQueue.global(qos: .utility)
         queue.async {
@@ -35,7 +35,7 @@ final class ViewController: UIViewController {
         }
     }
     
-    // second approach (URLSession)
+    // the second approach (URLSession)
     private func secondMethodToDownloadImage() {
         let task = URLSession.shared.dataTask(with: imageURL) { data, response, error in
             if let imageData = data {
@@ -49,10 +49,26 @@ final class ViewController: UIViewController {
         task.resume()
     }
     
+    // the third approach (DispatchWorkItem)
+    private func thirdMethodToDownloadImage() {
+        var data: Data?
+        let queue = DispatchQueue.global(qos: .utility)
+        let workItem = DispatchWorkItem {
+            data = try? Data(contentsOf: self.imageURL)
+        }
+        queue.async(execute: workItem)
+        workItem.notify(queue: DispatchQueue.main) {
+            if let data = data {
+                self.myImageView.image = UIImage(data: data)
+            }
+        }
+    }
+    
     @IBAction func downloadButtonAction(_ sender: UIButton) {
         myImageView.image = nil
 //        firstMethodToDownloadImage()
-        secondMethodToDownloadImage()
+//        secondMethodToDownloadImage()
+        thirdMethodToDownloadImage()
     }
 }
 
