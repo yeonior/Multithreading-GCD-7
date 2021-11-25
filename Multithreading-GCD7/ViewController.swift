@@ -64,11 +64,34 @@ final class ViewController: UIViewController {
         }
     }
     
+    // the fourth approach (DispatchWorkItem)
+    private func fourthMethodToDownloadImage(imageURL: URL,
+                                             runQueue: DispatchQueue,
+                                             completionQueue: DispatchQueue,
+                                             completion: @escaping (UIImage?, Error?) -> ()) {
+        runQueue.async {
+            do {
+                let data = try Data(contentsOf: imageURL)
+                completionQueue.async {
+                    completion(UIImage(data: data), nil)
+                }
+            } catch let error {
+                completionQueue.async {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+    
     @IBAction func downloadButtonAction(_ sender: UIButton) {
         myImageView.image = nil
 //        firstMethodToDownloadImage()
 //        secondMethodToDownloadImage()
-        thirdMethodToDownloadImage()
+//        thirdMethodToDownloadImage()
+        fourthMethodToDownloadImage(imageURL: imageURL, runQueue: DispatchQueue.global(), completionQueue: DispatchQueue.main) { result, error in
+            guard let image = result else { return }
+            self.myImageView.image = image
+        }
     }
 }
 
