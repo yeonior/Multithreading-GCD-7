@@ -64,7 +64,7 @@ final class ViewController: UIViewController {
         }
     }
     
-    // the fourth approach (DispatchWorkItem)
+    // the fourth approach (shell)
     private func fourthMethodToDownloadImage(imageURL: URL,
                                              runQueue: DispatchQueue,
                                              completionQueue: DispatchQueue,
@@ -88,7 +88,10 @@ final class ViewController: UIViewController {
 //        firstMethodToDownloadImage()
 //        secondMethodToDownloadImage()
 //        thirdMethodToDownloadImage()
-        fourthMethodToDownloadImage(imageURL: imageURL, runQueue: DispatchQueue.global(), completionQueue: DispatchQueue.main) { result, error in
+        fourthMethodToDownloadImage(imageURL: imageURL,
+                                    runQueue: DispatchQueue.global(),
+                                    completionQueue: DispatchQueue.main)
+        { result, error in
             guard let image = result else { return }
             self.myImageView.image = image
         }
